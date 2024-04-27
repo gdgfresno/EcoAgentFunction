@@ -66,12 +66,18 @@ def eco_agent(request):
     else:
         language_code = os.environ.get("LANGUAGE_CODE", "en-us")
 
-    PROJECT_ID = os.environ.get("PROJECT_ID", "duet-ai-roadshow-415022")
-    LOCATION_ID = os.environ.get("LOCATION_ID", "us-central1")
+    if request_json and 'location_id' in request_json:
+        location_id = request_json['location_id']
+    elif request_args and 'location_id' in request_args:
+        location_id = request_args['location_id']
+    else:
+        location_id = os.environ.get("LOCATION_ID", "us")
 
-    agent_path = f"projects/{PROJECT_ID}/locations/{LOCATION_ID}/agents/{agent_id}"
+    PROJECT_ID = os.environ.get("PROJECT_ID", "duet-ai-roadshow-415022")
+
+    agent_path = f"projects/{PROJECT_ID}/locations/{location_id}/agents/{agent_id}"
     session_path = f"{agent_path}/sessions/{session_id}"
-    session_client = get_session_client(agent_path, LOCATION_ID)
+    session_client = get_session_client(agent_path, location_id)
     text_input = session.TextInput(text=query)
     query_input = session.QueryInput(text=text_input, language_code=language_code)
     request = session.DetectIntentRequest(
