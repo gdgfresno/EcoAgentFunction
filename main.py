@@ -43,7 +43,7 @@ def eco_agent(request):
     elif request_args and 'agent_id' in request_args:
         agent_id = request_args['agent_id']
     else:
-        agent_id = os.environ.get("AGENT_ID", "e476af80-04b5-4c09-b1ea-09c73cf12c93")
+        agent_id = os.environ.get("AGENT_ID", "459e86ae-ffca-4e6d-944e-cbdef069b02c")
 
     if request_json and 'session_id' in request_json:
         session_id = request_json['session_id']
