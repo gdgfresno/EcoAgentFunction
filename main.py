@@ -43,7 +43,7 @@ def eco_agent(request):
     elif request_args and 'agent_id' in request_args:
         agent_id = request_args['agent_id']
     else:
-        agent_id = os.environ.get("AGENT_ID", "459e86ae-ffca-4e6d-944e-cbdef069b02c")
+        agent_id = os.environ.get("AGENT_ID", "e677345d-9fc4-4aa2-851f-31443e801ef2")
 
     if request_json and 'session_id' in request_json:
         session_id = request_json['session_id']
@@ -71,7 +71,7 @@ def eco_agent(request):
     elif request_args and 'location_id' in request_args:
         location_id = request_args['location_id']
     else:
-        location_id = os.environ.get("LOCATION_ID", "us")
+        location_id = os.environ.get("LOCATION_ID", "us-central1")
 
     PROJECT_ID = os.environ.get("PROJECT_ID", "duet-ai-roadshow-415022")
 
