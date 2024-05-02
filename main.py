@@ -3,11 +3,12 @@ import functools
 import os
 import uuid
 
+from flask import jsonify
 from google.cloud.dialogflowcx_v3beta1.services.agents import AgentsClient
 from google.cloud.dialogflowcx_v3beta1.services.sessions import SessionsClient
 from google.cloud.dialogflowcx_v3beta1.types import session
 
-@functools.lru_cache
+# @functools.lru_cache
 def get_session_client(agent_path="", location_id=""):
     client_options = None
     agent_components = AgentsClient.parse_agent_path(agent_path)
@@ -43,7 +44,7 @@ def eco_agent(request):
     elif request_args and 'agent_id' in request_args:
         agent_id = request_args['agent_id']
     else:
-        agent_id = os.environ.get("AGENT_ID", "e677345d-9fc4-4aa2-851f-31443e801ef2")
+        agent_id = os.environ.get("AGENT_ID", "e476af80-04b5-4c09-b1ea-09c73cf12c93")
 
     if request_json and 'session_id' in request_json:
         session_id = request_json['session_id']
@@ -87,4 +88,35 @@ def eco_agent(request):
     response_messages = [
         " ".join(msg.text.text) for msg in response.query_result.response_messages
     ]
-    return ' '.join(response_messages)
+    full_response = ' '.join(response_messages)
+
+    if request_json and 'trivia_process' in request_json:
+        trivia_process = request_json['trivia_process']
+    elif request_args and 'trivia_process' in request_args:
+        trivia_process = request_args['trivia_process']
+    else:
+        trivia_process = os.environ.get("TRIVIA_PROCESS", false)
+
+    if not trivia_process:
+        return full_response
+
+    response_lines = full_response.splitlines()
+    trivia = response_lines[0]
+    choices = []
+    for choice_line in response_lines[1:-1]:
+        choice_line = choice_line.strip()
+        first_space_index = choice_line.find(" ")
+        choices.append(choice_line[first_space_index + 1:] if first_space_index > 0 else choice_line)
+
+    answer_line = "".join(ch for ch in response_lines[-1].strip() if ch.isalnum() or ch == ' ')
+    answer_space_index = answer_line.find(" ")
+    correct = answer_line[answer_space_index + 1:] if answer_space_index > 0 else answer_line[0]
+    correct_index = correct if correct.isdigit() else (ord(correct.lower()) - ord('a') if correct.isalpha() else 0)
+    response = dict(
+        trivia=trivia,
+        choices=choices,
+        correct=correct,
+        correct_index=correct_index
+    )
+
+    return jsonify(response)
