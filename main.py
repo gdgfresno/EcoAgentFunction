@@ -23,6 +23,27 @@ def get_session_client(agent_path="", location_id=""):
 
 @functions_framework.http
 def eco_agent(request):
+    # Set CORS headers for the preflight request
+    if request.method == 'OPTIONS':
+        # Allows GET requests from any origin with the Content-Type
+        # header and caches preflight response for an 3600s
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '3600'
+        }
+
+        return ('', 204, headers)
+
+    # Set CORS headers for the main request
+    headers = {
+        'Content-Type':'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+    }
+    # END CORS
+
     request_json = request.get_json(silent=True)
     request_args = request.args
 
@@ -98,7 +119,7 @@ def eco_agent(request):
         trivia_process = os.environ.get("TRIVIA_PROCESS", false)
 
     if not trivia_process:
-        return full_response
+        return (full_response, 200, headers)
 
     response_lines = full_response.splitlines()
     trivia = response_lines[0]
@@ -119,4 +140,4 @@ def eco_agent(request):
         correct_index=correct_index
     )
 
-    return jsonify(response)
+    return (jsonify(response), 200, headers)
