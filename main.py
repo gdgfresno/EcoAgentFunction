@@ -8,7 +8,7 @@ from google.cloud.dialogflowcx_v3beta1.services.agents import AgentsClient
 from google.cloud.dialogflowcx_v3beta1.services.sessions import SessionsClient
 from google.cloud.dialogflowcx_v3beta1.types import session
 
-# @functools.lru_cache
+@functools.lru_cache
 def get_session_client(agent_path="", location_id=""):
     client_options = None
     agent_components = AgentsClient.parse_agent_path(agent_path)
