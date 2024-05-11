@@ -116,7 +116,7 @@ def eco_agent(request):
     elif request_args and 'trivia_process' in request_args:
         trivia_process = request_args['trivia_process']
     else:
-        trivia_process = os.environ.get("TRIVIA_PROCESS", false)
+        trivia_process = os.environ.get("TRIVIA_PROCESS", False)
 
     if not trivia_process:
         return (full_response, 200, headers)
