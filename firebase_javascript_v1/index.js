@@ -27,7 +27,7 @@ credentials = {
 const client = new SessionsClient({apiEndpoint: 'us-central1-dialogflow.googleapis.com'});
 
 // onCall(async (data, context)
-exports.getTrivia = functions.region('uscentral-1').runWith({memory: '128MB'}).https.onRequest(async (req, res) => {
+exports.getTrivia = functions.region('us-central1').runWith({memory: '128MB'}).https.onRequest(async (req, res) => {
   // CORS handling
   res.set('Access-Control-Allow-Origin', "*");
   res.set('Access-Control-Allow-Methods', 'GET, POST');
